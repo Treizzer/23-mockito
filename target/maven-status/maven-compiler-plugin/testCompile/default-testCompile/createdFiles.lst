@@ -1,0 +1,4 @@
+com\treizer\persistence\repository\PlayerRepositoryTest.class
+com\treizer\service\implementation\PlayerServiceTest.class
+com\treizer\DataProvider.class
+com\treizer\presentation\controller\PlayerControllerTest.class

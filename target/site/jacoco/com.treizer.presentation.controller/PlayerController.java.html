@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PlayerController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">java-mockito</a> &gt; <a href="index.source.html" class="el_package">com.treizer.presentation.controller</a> &gt; <span class="el_source">PlayerController.java</span></div><h1>PlayerController.java</h1><pre class="source lang-java linenums">package com.treizer.presentation.controller;
+
+import com.treizer.presentation.dto.PlayerDto;
+import com.treizer.presentation.dto.PlayerInsertDto;
+import com.treizer.presentation.dto.PlayerUpdateDto;
+import com.treizer.service.interfaces.ICommonService;
+
+public class PlayerController {
+
+    private final ICommonService&lt;PlayerDto, PlayerInsertDto, PlayerUpdateDto&gt; playerService;
+
+<span class="fc" id="L12">    public PlayerController(ICommonService&lt;PlayerDto, PlayerInsertDto, PlayerUpdateDto&gt; playService) {</span>
+<span class="fc" id="L13">        this.playerService = playService;</span>
+<span class="fc" id="L14">    }</span>
+
+    public String findAll() {
+<span class="fc" id="L17">        StringBuilder sb = new StringBuilder();</span>
+<span class="fc" id="L18">        var players = this.playerService.findAll();</span>
+<span class="fc" id="L19">        sb.append(&quot;[&quot;);</span>
+<span class="fc" id="L20">        players.forEach(p -&gt; sb.append(p.toString() + &quot; &quot;));</span>
+<span class="fc" id="L21">        sb.append(&quot;]&quot;);</span>
+
+<span class="fc" id="L23">        return sb.toString();</span>
+    }
+
+    public String findById(Long id) {
+<span class="fc" id="L27">        return this.playerService.findById(id).toString();</span>
+    }
+
+    public String save(PlayerInsertDto insertDto) {
+<span class="fc" id="L31">        return this.playerService.save(insertDto).toString();</span>
+    }
+
+    public String update(PlayerUpdateDto updateDto, Long id) {
+<span class="fc" id="L35">        return this.playerService.update(updateDto, id).toString();</span>
+    }
+
+    public String deleteById(Long id) {
+<span class="fc" id="L39">        return this.playerService.deleteById(id).toString();</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PlayerService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">java-mockito</a> &gt; <a href="index.source.html" class="el_package">com.treizer.service.implementation</a> &gt; <span class="el_source">PlayerService.java</span></div><h1>PlayerService.java</h1><pre class="source lang-java linenums">package com.treizer.service.implementation;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import com.treizer.persistence.entity.PlayerEntity;
+import com.treizer.persistence.repository.ICommonRepository;
+import com.treizer.presentation.dto.PlayerDto;
+import com.treizer.presentation.dto.PlayerInsertDto;
+import com.treizer.presentation.dto.PlayerUpdateDto;
+import com.treizer.service.interfaces.ICommonService;
+
+// It's only test with JUnit
+public class PlayerService implements ICommonService&lt;PlayerDto, PlayerInsertDto, PlayerUpdateDto&gt; {
+
+    // Dependency only works with Mockito
+    private final ICommonRepository&lt;PlayerEntity&gt; playerRepository;
+
+<span class="fc" id="L21">    public PlayerService(ICommonRepository&lt;PlayerEntity&gt; playerRepository) {</span>
+<span class="fc" id="L22">        this.playerRepository = playerRepository;</span>
+<span class="fc" id="L23">    }</span>
+
+    @Override
+    public List&lt;PlayerDto&gt; findAll() {
+<span class="fc" id="L27">        var players = this.playerRepository.findAll();</span>
+
+<span class="fc" id="L29">        return StreamSupport</span>
+<span class="fc" id="L30">                .stream(players.spliterator(), false)</span>
+<span class="fc" id="L31">                .map(p -&gt; new PlayerDto(p.getId(), p.getName(), p.getTeam(), p.getPosition()))</span>
+<span class="fc" id="L32">                .collect(Collectors.toList());</span>
+    }
+
+    @Override
+    public PlayerDto findById(Long id) {
+<span class="fc" id="L37">        PlayerEntity player = this.playerRepository.findById(id)</span>
+<span class="fc" id="L38">                .orElseThrow(() -&gt; new UnsupportedOperationException(&quot;No se encontró al jugador con ID: &quot; + id));</span>
+
+<span class="fc" id="L40">        return new PlayerDto(player.getId(), player.getName(), player.getTeam(), player.getPosition());</span>
+    }
+
+    @Override
+    public PlayerDto save(PlayerInsertDto insertDto) {
+        try {
+<span class="fc" id="L46">            Long id = this.playerRepository.size() + 1;</span>
+<span class="fc" id="L47">            PlayerEntity playerEntity = new PlayerEntity(id, insertDto.getName(), insertDto.getTeam(),</span>
+<span class="fc" id="L48">                    insertDto.getPosition());</span>
+<span class="fc" id="L49">            playerEntity = this.playerRepository.save(playerEntity);</span>
+
+<span class="fc" id="L51">            return new PlayerDto(playerEntity.getId(), playerEntity.getName(), playerEntity.getTeam(),</span>
+<span class="fc" id="L52">                    playerEntity.getPosition());</span>
+
+<span class="fc" id="L54">        } catch (Exception e) {</span>
+<span class="fc" id="L55">            throw new UnsupportedOperationException(</span>
+<span class="fc" id="L56">                    &quot;No fue posible guardar el jugador: &quot; + insertDto + &quot; -&gt; e: &quot; + e.toString());</span>
+        }
+    }
+
+    @Override
+    public PlayerDto update(PlayerUpdateDto updateDto, Long id) {
+<span class="fc bfc" id="L62" title="All 2 branches covered.">        PlayerEntity playerEntity = id != null</span>
+<span class="fc" id="L63">                ? this.playerRepository.findById(id)</span>
+<span class="fc" id="L64">                        .orElseThrow(() -&gt; new UnsupportedOperationException(</span>
+                                &quot;1. No se encontró al jugador con ID: &quot; + id))
+<span class="fc" id="L66">                : this.playerRepository.findById(updateDto.getId())</span>
+<span class="fc" id="L67">                        .orElseThrow(() -&gt; new UnsupportedOperationException(</span>
+<span class="fc" id="L68">                                &quot;2. No se encontró al jugador con ID: &quot; + updateDto.getId()));</span>
+
+<span class="fc" id="L70">        Optional.ofNullable(updateDto.getName()).ifPresent(playerEntity::setName);</span>
+<span class="fc" id="L71">        Optional.ofNullable(updateDto.getTeam()).ifPresent(playerEntity::setTeam);</span>
+<span class="fc" id="L72">        Optional.ofNullable(updateDto.getPosition()).ifPresent(playerEntity::setPosition);</span>
+
+<span class="fc" id="L74">        this.playerRepository.save(playerEntity);</span>
+
+<span class="fc" id="L76">        return new PlayerDto(playerEntity.getId(), playerEntity.getName(), playerEntity.getTeam(),</span>
+<span class="fc" id="L77">                playerEntity.getPosition());</span>
+    }
+
+    @Override
+    public PlayerDto deleteById(Long id) {
+<span class="fc" id="L82">        PlayerEntity playerEntity = this.playerRepository.findById(id)</span>
+<span class="fc" id="L83">                .orElseThrow(() -&gt; new UnsupportedOperationException(</span>
+                        &quot;No se encontró al jugador con ID: &quot; + id));
+
+<span class="fc" id="L86">        this.playerRepository.deleteById(id);</span>
+
+<span class="fc" id="L88">        return new PlayerDto(playerEntity.getId(), playerEntity.getName(), playerEntity.getTeam(),</span>
+<span class="fc" id="L89">                playerEntity.getPosition());</span>
+    }
+
+    @Override
+    public void saveVoid(PlayerInsertDto insertDto) {
+        // Long id = this.playerRepository.size() + 1;
+<span class="fc" id="L95">        Long id = 10L;</span>
+<span class="fc" id="L96">        PlayerEntity playerEntity = new PlayerEntity(id, insertDto.getName(), insertDto.getTeam(),</span>
+<span class="fc" id="L97">                insertDto.getPosition());</span>
+<span class="fc" id="L98">        this.playerRepository.saveVoid(playerEntity);</span>
+<span class="fc" id="L99">    }</span>
+
+    @Override
+    public void deleteByIdVoid(Long id) {
+<span class="fc" id="L103">        this.playerRepository.deleteByIdVoid(id);</span>
+<span class="fc" id="L104">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,10 @@
+com\treizer\service\interfaces\ICommonService.class
+com\treizer\presentation\dto\PlayerUpdateDto.class
+com\treizer\persistence\repository\ICommonRepository.class
+com\treizer\presentation\controller\PlayerController.class
+com\treizer\presentation\dto\PlayerInsertDto.class
+com\treizer\persistence\repository\PlayerRepository.class
+com\treizer\service\implementation\PlayerService.class
+com\treizer\presentation\dto\PlayerDto.class
+com\treizer\Main.class
+com\treizer\persistence\entity\PlayerEntity.class
